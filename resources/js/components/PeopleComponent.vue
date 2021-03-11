@@ -95,11 +95,13 @@
 
                 .get("https://api.airtable.com/v0/appcvhsoh5yrfEAuq/Grid%20view?maxRecords=3&view=Grid%20view",
                     {
+                        headers: {
+                            Authorization: "Bearer keyEUTCefv4BMf4hR"
+                        },
                         params: {
 
-                                api_key: "keyEUTCefv4BMf4hR",
                                 pageSize: 10,
-                                maxRecords: 10,
+                                maxRecords: 10
 
                             }
                     }
