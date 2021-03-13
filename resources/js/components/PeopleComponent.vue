@@ -58,27 +58,42 @@
 
                         <div>
                             <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+
                             <div class="mt-1">
-                            <input v-model="c_name" type="text" name="name" id="name" class="shadow-sm focus:ring-indigo-500
-                            focus:border-indigo-500 block w-full sm:text-sm border-gray-300 p-3 border
-                            rounded-md" placeholder="Calvin Hawkins" required>
+
+                                <input v-model="c_name" type="text" name="name" id="name" class="shadow-sm focus:ring-indigo-500
+                                focus:border-indigo-500 block w-full sm:text-sm border-gray-300 p-3 border
+                                rounded-md" placeholder="Calvin Hawkins">
+
                             </div>
                         </div>
 
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+
                             <div class="mt-1">
-                            <input v-model="c_email" type="text" name="email" id="email" class="shadow-sm focus:ring-indigo-500
-                            focus:border-indigo-500 block w-full sm:text-sm border-gray-300 p-3 border
-                            rounded-md" placeholder="you@example.com" required>
+
+                                <input v-model="c_email" type="text" name="email" id="email" class="shadow-sm focus:ring-indigo-500
+                                focus:border-indigo-500 block w-full sm:text-sm border-gray-300 p-3 border
+                                rounded-md" placeholder="you@example.com" required>
+
                             </div>
                         </div>
+
+                        <p v-if="errors.length">
+
+                            <ul>
+
+                                <li v-for="(error,index) in errors" :key="index">{{ error }}</li>
+
+                            </ul>
+                        </p>
 
                     </form>
 
                 </div>
 
-                <button @click.prevent="send()" type="button"  style="background-color: #3C8999" class="items-center px-6 py-3
+                <button @click.prevent="checkForm" type="button"  style="background-color: #3C8999" class="items-center px-6 py-3
                 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 bg-indigo-600 hover:bg-indigo-700
                 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full hover:text-white hover:font-bold">
                     Submit
@@ -114,17 +129,109 @@
 </template>
 
 <script>
+
     export default {
         props: [],
+        components: {
+
+        },
         data() {
             return {
                 c_name: null,
                 c_email: null,
                 c_users: [],
-                c_photoUrl: null
+                c_photoUrl: null,
+                errors: []
             }
         },
         methods:{
+
+            checkName: function(){
+
+                if (this.c_name){
+
+                    if(this.c_name.length > 48){
+
+                        this.erros.push('The name is too long.');
+
+                        return false;
+
+                    }else{
+
+                        var regexpName = /[0-9a-zA-Z]/;
+
+                        if(!regexpName.test(this.c_name)){
+
+                            this.errors.push('The name must be formed by letters and numbers.');
+
+                            return false;
+
+                        }else{
+
+                            return true;
+
+                        }
+                    }
+
+                }else{
+
+                    this.errors.push('Your name is required.');
+
+                    return false;
+
+                }
+
+            },
+
+            checkEmail: function(){
+
+                if (this.c_email){
+
+                    if(this.c_email.length > 48){
+
+                        this.errors.push('The email is too long');
+
+                        return false;
+
+                    }else{
+
+                        var regexpEmail = /[0-9a-zA-Z]+@[a-z0-9]+\.[a-z]+/;
+
+                        if(!regexpEmail.test(this.c_email)){
+
+                            this.errors.push('Please introduce a valid email.');
+
+                            return false;
+
+                        }else{
+
+                            return true;
+
+                        }
+
+                    }
+
+                }else{
+
+                    this.errors.push('Your Email is required.');
+
+                    return false;
+
+                }
+
+            },
+
+            checkForm: function (e) {
+
+                this.errors = [];
+
+                if(this.checkName() && this.checkEmail()){
+
+                    this.send();
+
+                }
+
+            },
 
             //function executed on creation. It calls the Airtable API for getting the list of the grid view
             charge: function(){
@@ -159,8 +266,6 @@
                 console.log("charge ERROR: " + JSON.stringify(error));
 
                 });
-
-
 
             },
 
