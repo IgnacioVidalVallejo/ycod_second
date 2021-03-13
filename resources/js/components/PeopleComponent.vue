@@ -1,20 +1,20 @@
 <template>
 
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div  id="people-component--container" class="max-w-7xl m-auto">
 
         <h1 class="text-5xl font-bold mb-20 ml-3.5" style="color: #3C8999">My Team</h1>
 
-        <div class="grid grid-cols-2 gap-20">
+        <div id="people-component--container--in" class="grid grid-cols-2 gap-20 m-4">
 
             <div>
 
                 <h2 class="text-xl m-4">Add new team member</h2>
 
-                <div class="flex flex-row flex-nowrap justify-between">
+                <div class="flex flex-row flex-nowrap justify-between w-full">
 
-                    <div id="file-upload" class="w-full m-6">
+                    <div id="file-upload" class="w-full mr-6 mt-9 mb-4 cursor-pointer">
 
-                        <label for="photo" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                        <label for="photo" class="block text-sm font-medium text-gray-700">
                         Photo
                         </label>
 
@@ -34,13 +34,12 @@
                                     </svg>
 
                                     <div class="flex text-sm text-gray-600">
+
                                         <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium
                                         text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2
-                                        focus-within:ring-offset-2 focus-within:ring-indigo-500">
-                                        <!--<span>Upload a file</span>
-                                        <input id="file-upload" name="file-upload" type="file" class="sr-only">-->
+                                        focus-within:ring-offset-2 focus-within:ring-indigo-500 m-auto">Click <br>to upload
                                         </label>
-                                        <p class="pl-1">or drag and drop</p>
+
                                     </div>
 
                                     <p class="text-xs text-gray-500">
@@ -55,7 +54,7 @@
 
                     </div>
 
-                    <form class="space-y-5 w-full m-6 mb-4 mt-9 flex flex-col justify-between">
+                    <form class="w-full mb-4 mt-9 flex flex-col justify-between">
 
                         <div>
                             <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
@@ -79,9 +78,9 @@
 
                 </div>
 
-                <button @click.prevent="send()" type="button" class="items-center px-6 py-3 border border-transparent
-                text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700
-                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-11/12 m-6">
+                <button @click.prevent="send()" type="button"  style="background-color: #3C8999" class="items-center px-6 py-3
+                border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 bg-indigo-600 hover:bg-indigo-700
+                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full hover:text-white hover:font-bold">
                     Submit
                 </button>
 
@@ -89,7 +88,7 @@
 
             <div>
 
-                <ul class="divide-y divide-gray-200">
+                <ul id="people-component--list" class="divide-y divide-gray-200">
 
                     <li v-for="(value, index) in c_users" :key="index" class="py-4 flex">
 
@@ -127,6 +126,7 @@
         },
         methods:{
 
+            //function executed on creation. It calls the Airtable API for getting the list of the grid view
             charge: function(){
 
                 var vm = this;
@@ -136,23 +136,21 @@
                 .get("https://api.airtable.com/v0/appcvhsoh5yrfEAuq/Grid%20view",
                     {
                         headers: {
+
                             Authorization: "Bearer keyEUTCefv4BMf4hR"
-                        },
-                        params: {
 
-                                pageSize: 10
+                        }
 
-                            }
                     }
 
                 )
 
                 .then(function(response) {
 
-                //updates transportation and emits it
-                vm.c_users = response.data.records;
+                //assignment of users at charging page or updating Airtable users list
+                vm.c_users = vm.orderByLast(response.data.records);
 
-                console.log("charge "/*, JSON.stringify(vm.c_users)*/);
+                console.log("charge");
 
                 })
 
@@ -160,20 +158,20 @@
 
                 console.log("charge ERROR: " + JSON.stringify(error));
 
-                })
-
-                .finally(()=>{
+                });
 
 
-                }
-            )
+
             },
+
+            //function for the cloudinary upload widget (as popup window)
             cloudinaryUploadWidget: function(){
 
                 var vm = this;
 
                 var myWidget = cloudinary.applyUploadWidget(document.getElementById('file-upload'),
                     {
+                        //CLOUDINARY WIDGET UPLOAD API CONFIG
                         cloudName: 'ddcnjjimx',
                         uploadPreset: 'wleo4imq',
                         multiple: false ,
@@ -194,19 +192,25 @@
 
                         vm.c_photoUrl = result.info.secure_url;
 
-                            console.log('Done uploading..: ', /*result.info*/);
+                            console.log('Done uploading..');
                         }
 
                     });
 
+                    //popup opener
                     myWidget.open();
 
             },
+
+            //sending data function
+            //if photo choosen, takes it, if not it takes a default cloudinary avatar image
             send: function(){
 
                 var vm = this;
 
+                //Airtable JS register creation
                 var Airtable = require('airtable');
+
                 var base = new Airtable({apiKey: 'keyEUTCefv4BMf4hR'}).base('appcvhsoh5yrfEAuq');
                 base('Grid view').create([
                     {
@@ -239,25 +243,38 @@
                         //and charge again info
                         setTimeout(function(){
                             vm.charge();
-                        },5000);
+                        },10000);
 
                     });
+            },
+
+            orderByLast: function(UsersArray){
+
+                var array = UsersArray.sort((a, b) => (a.createdTime > b.createdTime) ? -1 : 1);
+
+                return array;
             }
         },
 
-        watch: {},
+        watch: {
+
+        },
 
         beforeCreate(){},
 
         created(){
 
+            //execute AJAX call asking for registered users on Airtable
             this.charge();
 
             this.c_photoUrl = "https://res.cloudinary.com/demo/image/upload/d_avatar.png/non_existing_id.png";
 
         },
         mounted() {
+
             var vm = this;
+
+            //add listener for launching cloudinary image chooser window
             document.getElementById("file-upload").addEventListener("click", function(){
                     vm.cloudinaryUploadWidget();
                 }, false);
@@ -275,6 +292,42 @@
     margin-top: 45px;
     margin-left: 25px;
 
+}
+
+@media(max-width: 1440px){
+
+    #people-component--container h1{
+        text-align: center;
+    }
+    #people-component--container--in  div h2{
+        text-align: center;
+    }
+
+}
+
+@media(max-width: 900px){
+
+    #people-component--container--in{
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
+    }
+    #people-component--container--in div{
+        width: 100%;
+
+    }
+    #people-component--container--in button{
+        width: 100%;
+
+
+    }
+    #people-component--list li img{
+        margin-left: 30%;
+        margin-right: 15px;
+        border-radius: 50px;
+        width: 50px;
+        height: 50px;
+    }
 }
 
 </style>
