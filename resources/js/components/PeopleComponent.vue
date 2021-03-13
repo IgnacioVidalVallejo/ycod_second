@@ -1,14 +1,14 @@
 <template>
 
-    <div  id="people-component--container" class="max-w-7xl m-auto">
+    <div class="max-w-7xl m-auto">
 
-        <h1 class="text-5xl font-bold mb-20 ml-3.5" style="color: #3C8999">My Team</h1>
+        <h1 class="text-5xl font-bold mb-20 ml-3.5 text-center xl:text-left" style="color: #3C8999">My Team</h1>
 
-        <div id="people-component--container--in" class="grid grid-cols-2 gap-20 m-4">
+        <div class="m-4 flex flex-col md:flex-row">
 
-            <div>
+            <div class="w-full mr-20">
 
-                <h2 class="text-xl m-4">Add new team member</h2>
+                <h2 class="text-xl m-4 text-center xl:text-left">Add new team member</h2>
 
                 <div class="flex flex-row flex-nowrap justify-between w-full">
 
@@ -95,19 +95,20 @@
 
                 <button @click.prevent="checkForm" type="button"  style="background-color: #3C8999" class="items-center px-6 py-3
                 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 bg-indigo-600 hover:bg-indigo-700
-                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full hover:text-white hover:font-bold">
+                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full hover:text-white hover:font-bold
+                lg:w-full">
                     Submit
                 </button>
 
             </div>
 
-            <div>
+            <div class="w-full">
 
                 <ul id="people-component--list" class="divide-y divide-gray-200">
 
                     <li v-for="(value, index) in c_users" :key="index" class="py-4 flex">
 
-                        <img v-if="value.fields.Photo[0].thumbnails" class="h-10 w-10 rounded-full"
+                        <img v-if="value.fields.Photo[0].thumbnails" class="h-10 w-10 rounded-full ml-20  sm:ml-40 md:ml-4"
                         :src="value.fields.Photo[0].thumbnails.large.url" :alt="value.fields.Photo[0].filename">
 
                         <div class="ml-3">
@@ -397,42 +398,6 @@
     margin-top: 45px;
     margin-left: 25px;
 
-}
-
-@media(max-width: 1440px){
-
-    #people-component--container h1{
-        text-align: center;
-    }
-    #people-component--container--in  div h2{
-        text-align: center;
-    }
-
-}
-
-@media(max-width: 900px){
-
-    #people-component--container--in{
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: space-between;
-    }
-    #people-component--container--in div{
-        width: 100%;
-
-    }
-    #people-component--container--in button{
-        width: 100%;
-
-
-    }
-    #people-component--list li img{
-        margin-left: 30%;
-        margin-right: 15px;
-        border-radius: 50px;
-        width: 50px;
-        height: 50px;
-    }
 }
 
 </style>
