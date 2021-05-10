@@ -1,4 +1,4 @@
-# Ycode Airtable
+# Y-Airtable
 
 Hi! Are you ready to join our team working on an innovative and exciting project? We are looking for a full-stack developer.
 
